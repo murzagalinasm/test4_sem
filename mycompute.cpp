@@ -8,7 +8,7 @@ int Flag = 0;
 //1 - +;
 //2 - -;
 //3 - *;
-//4 - concat;
+//4 - /;
 int *Sum(int *count, int size, int i)
 {
     count[i] = count[i] + count[i + 1];
