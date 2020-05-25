@@ -1,200 +1,162 @@
-#include<cmath>
-#include<iostream>
-#include<string>
-#pragma warning (disable:4996)
+#include <iostream>
+#include <cmath>
+#include <vector>
+#include <string>
+
+//#define CONCAT -4;
+//#define MULT -3;
+//#define PLUS -2;
+//#define MINUS -1;
+
 using namespace std;
-int Flag = 0;
-//0 - nothing;
-//1 - +;
-//2 - -;
-//3 - *;
-//4 - /;
-int *Sum(int *count, int size, int i)
-{
-    count[i] = count[i] + count[i + 1];
-    i++;
-    while (i < size)
-    {
-        count[i] = count[i + 1];
-        i++;
-    }
-    count[i] = NULL;
-    return count;
-}
- 
-int *Minus(int *count, int size, int i)
-{
-    count[i] = count[i] - count[i + 1];
-    i++;
-    while (i < size)
-    {
-        count[i] = count[i + 1];
-        i++;
-    }
-    count[i] = NULL;
-    return count;
-}
- 
-int *Mult(int *count, int size, int i)
-{
-    count[i] = count[i] * count[i + 1];
-    i++;
-    while (i < size)
-    {
-        count[i] = count[i + 1];
-        i++;
-    }
-    count[i] = NULL;
-    return count;
-}
- 
-int *Divide(int *count, int size, int i)
-{
-    count[i] = count[i] / count[i + 1];
-    i++;
-    while (i < size)
-    {
-        count[i] = count[i + 1];
-        i++;
-    }
-    count[i] = NULL;
-    return count;
-}
- 
-void calculate(int*oper,int*count,int ansv,int sizeoper)
-{
-    int i;
-    int m = sizeoper + 1;
-    int*count2 = new int[m];
-    for (i = 0; i < m; i++)
-        count2[i] = count[i];
-    int c=0;
-    i = 0;
-    while (i<sizeoper)
-    {
-        if (oper[i] == 3)
-        {
-            Divide(count2, m,i-c);
-            m--;
-            c++;
+
+enum OPERATORS {CONCAT = -4, MULT = -3, PLUS = -2, MINUS = -1 };
+
+
+bool Calculate(vector<int>& numbers, vector<int>& operators, int result){
+    vector<int> oper = operators;
+    vector<int> num = numbers;
+
+    
+    
+    for(int i = 0; i < oper.size();){
+        if(oper[i] == CONCAT){
+            num[i] = num[i]*10 + num[i+1];
+            num.erase(num.begin() + i + 1);
+            oper.erase(oper.begin() + i);
+            i = 0;
+        } else{
+            i++;
         }
-        else
-            if((oper[i] == 4))
-            {
-                Mult(count2, m, i-c);
-                m--;
-                c++;
-            }
-        i++;
+
     }
-    c = 0;
-    i = 0;
-    while (i<sizeoper)
-    {
-        if (oper[i] == 1)
-        {
-            Sum(count2, m, i-c);
-            m--;
-            c++;
+
+    for(int i = 0; i < oper.size();){
+        if(oper[i] == MULT){
+            num[i] = num[i] * num[i+1];
+            num.erase(num.begin() + i + 1);
+            oper.erase(oper.begin() + i);
+            i = 0;
+        } else{
+            i++;
         }
-        else
-            if ((oper[i] == 2))
-            {
-                Minus(count2, m, i-c);
-                m--;
-                c++;
-            }
-        i++;
     }
-    int a = 0;
-    int b = 0;
-    for (int k = 0; k < sizeoper; k++)
-        cout << oper[k];
-    cout << endl;
-    for (int k = 0; k < m; k++) 
-    {
-        a += count2[k] * pow(10, m - k-1);
-    }
-    cout << a <<  "This A"<<endl;
-    if (a == ansv)
-    {
-        cout << "TRUE";
-        Flag = 1;
-        for (int k = 0; k < sizeoper+1; k++)
-        {
-            cout << count[k];
-            if ((oper[k] != 0) && (k != sizeoper + 1))
-            {
-                if (oper[k] == 1)
-                {
-                    cout << " + ";
-                }
-                if (oper[k] == 2)
-                {
-                    cout << " - ";
-                }
-                if (oper[k] == 3)
-                {
-                    cout << " * ";
-                }
-                if (oper[k] == 4)
-                {
-                    cout << " / ";
-                }
-            }
+
+    for(int i = 0; i < oper.size();){
+        if(oper[i] == PLUS){
+            num[i] = num[i] + num[i+1];
+            num.erase(num.begin() + i + 1);
+            oper.erase(oper.begin() + i);
+            i = 0;
+        }else{
+            i++;
         }
-        if (Flag == 1)
-            exit(1);
+    }
+
+    for(int i = 0; i < oper.size(); ){
+        if(oper[i] == MINUS){
+            num[i] = num[i] - num[i+1];
+            num.erase(num.begin() + i + 1);
+            oper.erase(oper.begin() + i);
+            i = 0;
+        }else{
+            i++;
+        }
     }
     
-    system("PAUSE");
+    return (num[0] == result);
+
 }
- 
-void Perebor(int *oper, int size, int sizeoper, int*count, int b, int m = 0)
-{
-    int i = m;
-    int l = 0;
-    if (i == sizeoper)
-        {
-            
-            calculate(oper, count, b, sizeoper);
+
+
+void Change(vector<int>& oper){
+    oper[oper.size()-1]++;
+    for(int i = oper.size() - 1; i > 0; i--){
+        if (oper[i] == 0){
+            oper[i] = -4;
+            oper[i-1]++;
         }
-    else
-        while ( l < size)
-        {
-            oper[i] = l;
-            Perebor(oper, size, sizeoper,count, b, m + 1);
-            l++;
-        }
-}
- 
- 
-int main()
-{
-    int a,b,i,pos,q;
-    i = 0;
-   
-    string num,num1,num2;
-    getline(cin, num);
-    num.find(' ', pos);
-    num.copy(num1,pos-1,0);
-    q = num.length();
-    num.copy(num2,q-pos,pos);
-        
-    a = stoi(num1);
-    int *count = new int[i-1];
-    int *oper = new int[i - 2];
-    for (int k = 0; k < i - 2; k++)
-        oper[k] = 0;
-    int t = i-2;
-    while (t+1)
-    {
-        count[t] = a % 10;
-        a = a / 10;
-        t--;
     }
-    b = stoi(num2);
-    Perebor(oper, 5,i-2,count,b);
-    system("PAUSE");
+}
+
+
+
+
+void PrintOper(int a){
+    switch (a){
+        case CONCAT:
+            break;
+        case MULT:
+        cout << "*";
+            break;
+        case PLUS:
+        cout << "+";
+            break;
+        case MINUS:
+        cout << "-";
+            break;
+
+    }
+}
+
+
+
+void PrintResult(int result, vector<int>& num, vector<int>& oper){
+    int result_size = 2*num.size() - 1;
+    int k = 0; //счётчик для значений
+    int m = 0; //счётчик для знаков
+
+
+    for(int i = 0; i < result_size; i++){
+        if(i%2 == 0){
+            cout << num[k];
+            k++;
+        }
+        else{
+            PrintOper(oper[m]);
+            m++;
+        }
+    }
+    cout << " " << "=" << " " << result << endl;
+}
+
+
+
+int main (int ac, char* av[]){
+    int result = atoi(av[1]);
+    int size = ac - 2;
+    int k = 0;//счётчик кол-ва решений
+
+    vector<int> num(size);
+    vector<int> oper(size - 1);
+    
+    
+    for(int i = 0; i < oper.size(); i++){
+        oper[i] = CONCAT;
+    }
+
+    
+
+    for(int i = 0; i < size; i++){
+        num[i] = atoi(av[2+i]);
+    }
+
+    long long perebor = pow(4, size - 1);
+
+
+    for(int i = 0; i < perebor; i++){
+        if(Calculate(num, oper, result)){
+            PrintResult(result, num, oper);
+	    k++;
+        }	
+	
+        Change(oper);
+    }
+    
+    if(k == 0){
+		cout << " has not found any combination " << endl;
+
+    }
+
     return 0;
 }
