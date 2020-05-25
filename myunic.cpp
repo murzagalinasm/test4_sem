@@ -1,34 +1,34 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <cstring>
 #include <algorithm>
 
 using namespace std;
-vector<string> str;
 
 bool sort_key(string i, string j)
 {
-if ( i < j )
-{
-return 1;
-}
-return 0;
+	return (i<j);
 }
 
 int main()
 {
+	vector<string> strl;
+	string str;
+	int k = 0;
 
-while (cin)
-{
-string a;
-getline(cin, a);
-str.push_back(a);
-//break;
-}
+	while (getline(cin,str))
+	{
+		strl.push_back(str);
+		k++;
+	}
 
-sort(str.begin(), str.end(), sort_key);
+	sort(strl.begin(), strl.end(), sort_key);
 
-for (int i = 0; i < str.size(); ++i)
-cout << str[i] << ' ';
+	for (int i = 0; i < k; i++)
+	{
+		cout << strl[i] << "\n";
+
+	}
+
+	return 0;
 }
